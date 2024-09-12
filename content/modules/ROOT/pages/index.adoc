@@ -3,7 +3,7 @@
 
 == Summary of the Project
 
-Thanks for taking time to learn about and use InstructLab at Red Hat Summit. During this hands-on exercise, you will learn what InstructLab is and how you can contribute to the project. You will also learn how to leverage InstructLab to improve a Large Language Model (LLM), and train it using synthetic data generation.
+Thanks for taking time to learn about and use InstructLab. During this hands-on exercise, you will learn what InstructLab is and how you can contribute to the project. You will also learn how to leverage InstructLab to improve a Large Language Model (LLM), and train it using synthetic data generation.
 
 InstructLab is a fully open-source project from Red Hat, and the MIT-IBM Watson AI Lab, that introduces Large-scale Alignment for chatBots (LAB). The project's innovation helps during the instruction-tuning phase of LLM training. However, to fully understand the benefit of this project, you need to be familiar with some basic concepts of what an LLM is and the difficulty and cost associated with training a model.
 
