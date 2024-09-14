@@ -12,13 +12,13 @@ InstructLab is a fully open-source project from Red Hat, and the MIT-IBM Watson 
 
 A large language model (LLM) is a type of artificial intelligence (AI) model that uses deep learning techniques to understand and generate human-like text based on input data. These models are designed to analyze vast amounts of text data and learn patterns, relationships, and structures within the data. They can be used for various natural language processing (NLP) tasks, such as:
 
-. *Text classification*: Categorizing text based on its content, such as spam detection or sentiment analysis.
-. *Text summarization*: Generating concise summaries of longer texts, such as news articles or research papers.
-. *Machine translation*: Translating text from one language to another, such as English to French or German to Chinese.
-. *Question answering*: Answering questions based on a given context or set of documents.
-. *Text generation*: Creating new text that is coherent, contextually relevant, and grammatically correct, such as writing articles, stories, or even poetry.
+* *Text classification*: Categorizing text based on its content, such as spam detection or sentiment analysis.
+* *Text summarization*: Generating concise summaries of longer texts, such as news articles or research papers.
+* *Machine translation*: Translating text from one language to another, such as English to French or German to Chinese.
+* *Question answering*: Answering questions based on a given context or set of documents.
+* *Text generation*: Creating new text that is coherent, contextually relevant, and grammatically correct, such as writing articles, stories, or even poetry.
 
-Large language models typically have many parameters (millions to billions) that allow them to capture complex linguistic patterns and relationships in the data. They are trained on large datasets, such as books, articles, and websites, using techniques like unsupervised pre-training and supervised fine-tuning. Some popular large language models include GPT-3, Llama, and Mistral.
+Large language models typically have many parameters (millions to billions) that allow them to capture complex linguistic patterns and relationships in the data. They are trained on large datasets, such as books, articles, and websites, using techniques like unsupervised pre-training and supervised fine-tuning. Some popular large language models include GPT-4, Llama, and Mistral.
 
 In summary, a large language model (LLM) is an artificial intelligence model that uses deep learning techniques to understand and generate human-like text based on input data. They are designed to analyze vast amounts of text data and learn patterns, relationships, and structures within the data, and can be used for various natural language processing tasks.
 
@@ -44,27 +44,27 @@ InstructLab leverages a taxonomy-guided synthetic data generation process and a 
 As you work with InstructLab, you will see the terms Skills and Knowledge.  What is the difference between Skills and Knowledge? A simple analogy is to think of a skill as teaching someone how to fish. Knowledge, on the other hand, is knowing that the best place to catch a Bass is when the sun is setting while casting your line near the trunk of a tree along the bank.
 
 [#getting_started]
-== Getting started
+== Getting started with InstructLab
 
-Install ilab command line interface
 We created a CLI tool called ilab that implements a local LLM developer experience and workflow. The ilab CLI is written in Python and works on the following architectures:
 
 . Apple M1/M2/M3 Mac
 . Linux systems
+. Windows 11 within a WSL environment
 
 We anticipate support for more operating systems in the future. The system requirements to use the command line tool are as follows:
 
 . C++ compiler
-. Python 3.9+
+. Python 3.10+
 . Approximately 60GB disk space (entire process)
 .. Disk space requirements are dependent on several factors. Keep in mind that we will be generating data to feed to the model while also having the model locally on our system. For example, the model we are working with during this workshop is roughly 5gb in size.
 
 [#installation]
 === Installing ilab
 
-The first thing we need to do is to source a Python virtual environment that will allow us to interact with the InstructLab command line tools.
+The first thing we need to do is to source a Python virtual environment that will allow us to interact with the InstructLab command line tools. While you have two terminal windows available on your right, let's start with the *upper* window.
 
-. Activate the python venv environment by running the following commands:
+. Navigate to the preset InstructLab folder and activate the python virtual environment by running the following commands:
 +
 
 [source,sh,role=execute,subs=attributes+]
@@ -73,9 +73,9 @@ cd ~/instructlab
 source venv/bin/activate
 ----
 +
-.Your Prompt should now look like this
+.Your prompt should now look like this
 
-[source,sh]
+[source,sh,role=execute,subs=attributes+]
 ----
 (venv) [instruct@instructlab instructlab]$ 
 ----
@@ -86,7 +86,7 @@ source venv/bin/activate
 
 [source,sh,role=execute,subs=attributes+]
 ----
-pip3 install git+https://github.com/instructlab/instructlab.git@v0.17.1
+pip3 install git+https://github.com/instructlab/instructlab.git@v0.18.4
 
 ----
 +
@@ -105,7 +105,7 @@ ilab
 Assuming that everything has been installed correctly, you should see the following output:
 +
 
-[source,sh,role=execute,subs=attributes+]
+[subs=quotes]
 ----
 Usage: ilab [OPTIONS] COMMAND [ARGS]...
 
@@ -113,28 +113,38 @@ Usage: ilab [OPTIONS] COMMAND [ARGS]...
   CLI for interacting with InstructLab.
 
 
-  If this is your first time running ilab, it's best to start with `ilab init`
+  If this is your first time running ilab, it's best to start with `ilab config init`
   to create the environment.
 
 
 Options:
-  --config PATH  Path to a configuration file.  [default: config.yaml]
+  --config PATH  Path to a configuration file.  [default: /home/instruct/.config/instructlab/config.yaml]
+  -v, --verbose  Enable debug logging (repeat for even more verbosity)
+  --config PATH  Path to a configuration file.  [default: /home/instruct/.config/instructlab/config.yaml]
+  -v, --verbose  Enable debug logging (repeat for even more verbosity)
   --version      Show the version and exit.
   --help         Show this message and exit.
 
-
 Commands:
-  chat      Run a chat using the modified model
-  check     (Deprecated) Check that taxonomy is valid
-  convert   Converts model to GGUF
-  diff      Lists taxonomy files that have changed since <taxonomy-base>...
-  download  Download the model(s) to train
-  generate  Generates synthetic data to enhance your example data
-  init      Initializes environment for InstructLab
-  list      (Deprecated) Lists taxonomy files that have changed since <taxonomy-base>.
-  serve     Start a local server
-  test      Runs basic test to ensure model correctness
-  train     Takes synthetic data generated locally with `ilab generate`...
+  config    Command Group for Interacting...
+  data      Command Group for Interacting...
+  model     Command Group for Interacting...
+  system    Command group for all...
+  taxonomy  Command Group for Interacting...
+
+Aliases:
+  chat      model chat
+  convert   model convert
+  diff      taxonomy diff
+  download  model download
+  evaluate  model evaluate
+  generate  data generate
+  init      config init
+  list      model list
+  serve     model serve
+  sysinfo   system info
+  test      model test
+  train     model train
 ----
 
 
@@ -146,75 +156,75 @@ Commands:
 Now that we know that the command-line interface `ilab` is working correctly, the next thing we need to do is initialize the local environment so that we can begin working with the model. This is accomplished by issuing a simple init command.
 
 
-Step 1: Initialize ilab by running the following command:
+Step 1: In the same terminal window, initialize ilab by running the following command:
 
 [source,sh,role=execute,subs=attributes+]
 ----
 ilab config init
 ----
-.You should see the following output:
-[source,sh]
+
+You should see the following output (press kbd:[ENTER] for defaults):
+
+[subs=quotes]
 ----
-Found config.yaml in the current directory, do you still want to continue? [y/N]: y
 Welcome to InstructLab CLI. This guide will help you to setup your environment.
 Please provide the following values to initiate the environment [press Enter for defaults]:
-----
-
-NOTE: When prompted to accept the `config.yaml`, hit kbd:[ENTER] 
-
-[source,sh]
-----
 Path to taxonomy repo [taxonomy]:
 ----
 
-NOTE: When prompted to provide the path to the taxonomy repo, hit kbd:[ENTER] 
+NOTE: While traditionally you'll be prompted to configure options and download the taxonomy, here you can just it kbd:[ENTER] for the default settings.
 
-[source,sh]
+The last step of the ilab configuration is to select a train profile. Train profiles are GPU specific profiles that enable accelerated training behavior. If you are on MacOS or a Linux machine without a dedicated GPU, please choose No Profile (CPU-Only) by hitting Enter. There are various flags you can utilize with individual ilab commands that will allow you to utilize your GPU if applicable. **For this lab**, we will a single NVIDIA L4 GPU. Select the L4_x4.yaml option at the following prompt.
+
 ----
-`taxonomy` seems to not exist or is empty. Should I clone git@github.com:instruct-lab/taxonomy.git for you? [y/N]: y
+Generating `/home/instruct/.config/instructlab/config.yaml` and `/home/instruct/.local/share/instructlab/internal/train_configuration/profiles`...
+Please choose a train profile to use:
+[0] No profile (CPU-only)
+[1] A100_H100_x2.yaml
+[2] A100_H100_x4.yaml
+[3] A100_H100_x8.yaml
+[4] L40_x4.yaml
+[5] L40_x8.yaml
+[6] L4_x8.yaml
+[7] L4_x4.yaml
+Enter the number of your choice [hit enter for the default CPU-only profile] [0]: 6
 ----
 
-NOTE: If asked if the CLI should clone the taxonomy repo, input 'y' as shown in the above output.
+NOTE: When prompted to enter a training profile, enter 6 as shown in the above output.
 
-[source,sh]
+[subs=quotes]
 ----
-Cloning git@github.com:instruct-lab/taxonomy.git...
-Generating `config.yaml` in the current directory...
+You selected: L4_x4.yaml
 Initialization completed successfully, you're ready to start using `ilab`. Enjoy!
 ----
 
-NOTE: When asked to enter a directory for the model file, use the default and hit <ENTER>
-
-[source,sh]
-----
-Path to your model [models/merlinite-7b-lab-Q4_K_M.gguf]:
-----
-
-* Several things happen during the initialization phase: A default taxonomy is created on the local file system, and a configuration file (config.yaml) is created in the current directory.
-* The config.yaml file contains defaults we will use during this workshop. After this workshop, when you begin playing around with InstructLab, it is important to understand the contents of the configuration file so that you can tune the parameters to your liking
+** Several things happen during the initialization phase: A default taxonomy is located on the local file system, and a configuration file (config.yaml) is created in the 'home/instruct/.config/instructlab/' directory.
+* The config.yaml file contains defaults we will use during this workshop. After this workshop, when you begin playing around with InstructLab, it is important to understand the contents of the configuration file so that you can tune the parameters to your liking.
 
 [#download]
 === Download the model
 
-*Step 1*: Run the `ilab download` command.
+With the InstructLab environment configured, you will now download a quantized (compressed and optimized) model to your local directory, to be used as a model server for API requests, or to help train a new model.
+
+*Step 1*: Run the `ilab model download` command.
 
 [source,sh,role=execute,subs=attributes+]
 ----
 ilab model download --repository instructlab/granite-7b-lab-GGUF --filename=granite-7b-lab-Q4_K_M.gguf
 ----
 
-The ilab download command downloads a model from the HuggingFace instructlab organization that we will use for this workshop. 
+The `ilab model download`` command downloads a model from the HuggingFace InstructLab organization that we will use for this workshop. 
 
 The output should look like the following:
 
-NOTE: *This command may not show the contents if the model is being cached on the local machine.*
-
-[source,sh]
+[subs=quotes]
 ----
-Downloading model from downloading model from instructlab/granite-7b-lab-GGUF@main to models...                                                                                                                                                 
-Downloading 'granite-7b-lab-Q4_K_M.gguf' to 'models/.huggingface/download/granite-7b-lab-Q4_K_M.gguf.6adeaad8c048b35ea54562c55e454cc32c63118a32c7b8152cf706b290611487.incomplete'
-INFO 2024-05-06 16:46:24,394 file_download.py:1877 Downloading 'granite-7b-lab-Q4_K_M.gguf' to 'models/.huggingface/download/granite-7b-lab-Q4_K_M.gguf.6adeaad8c048b35ea54562c55e454cc32c63118a32c7b8152cf706b290611487.incomplete'100%|█████████████████████████████████████████████████████████████| 4.08G/4.08G [00:36<00:00, 110MB/s]
-
+Downloading model from Hugging Face: instructlab/granite-7b-lab-GGUF@main to /home/instruct/.cache/instructlab/models...
+Downloading 'granite-7b-lab-Q4_K_M.gguf' to '/home/instruct/.cache/instructlab/models/.cache/huggingface/download/granite-7b-lab-Q4_K_M.gguf.6adeaad8c048b35ea54562c55e454cc32c63118a32c7b8152cf706b290611487.incomplete'
+INFO 2024-09-10 16:51:32,740 huggingface_hub.file_download:1908: Downloading 'granite-7b-lab-Q4_K_M.gguf' to '/home/instruct/.cache/instructlab/models/.cache/huggingface/download/granite-7b-lab-Q4_K_M.gguf.6adeaad8c048b35ea54562c55e454cc32c63118a32c7b8152cf706b290611487.incomplete'
+granite-7b-lab-Q4_K_M.gguf: 100%|█| 4.08G/4.08G [00:19<00:00, 207
+Download complete. Moving file to /home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
+INFO 2024-09-10 16:51:52,562 huggingface_hub.file_download:1924: Download complete. Moving file to /home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
 ----
 
 
@@ -223,21 +233,39 @@ Now that the model has been downloaded, we can serve and chat with the model. Se
 [#serve]
 === Serving the model
 
-Serve the model by running the following command:
+Let's serve the model by running the following command in the same terminal window:
 
 [source,sh,role=execute,subs=attributes+]
 ----
-ilab model serve --model-path models/granite-7b-lab-Q4_K_M.gguf
+ilab model serve --model-path /home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
 ----
 
 As you can see, the serve command can take an optional `-–model-path` argument. In this case, we want to serve the Granite model. If no model path is provided, the default value from the config.yaml file will be used. 
+
 Once the model is served and ready, you’ll see the following output:
 
-[source,sh]
+[subs=quotes]
 ----
-INFO 2024-04-23 17:16:53,903 lab.py:296 Using model '/models/granite-7b-lab-Q4_K_M.gguf' with -1 gpu-layers and 4096 max context size.
-INFO 2024-04-23 17:17:02,861 server.py:155 Starting server process, press CTRL+C to shutdown server...
-INFO 2024-04-23 17:17:02,861 server.py:156 After application startup complete see http://127.0.0.1:8000/docs for API.
+INFO 2024-09-10 18:12:09,459 instructlab.model.serve:145: Using model '/home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf' with -1 gpu-layers and 4096 max context size.
+INFO 2024-09-10 18:12:09,459 instructlab.model.serve:149: Serving model '/home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf' with llama-cpp
+INFO 2024-09-10 18:12:16,023 instructlab.model.backends.llama_cpp:250: Replacing chat template:
+ {% for message in messages %}
+{% if message['role'] == 'user' %}
+{{ '<|user|>
+' + message['content'] }}
+{% elif message['role'] == 'system' %}
+{{ '<|system|>
+' + message['content'] }}
+{% elif message['role'] == 'assistant' %}
+{{ '<|assistant|>
+' + message['content'] + eos_token }}
+{% endif %}
+{% if loop.last and add_generation_prompt %}
+{{ '<|assistant|>' }}
+{% endif %}
+{% endfor %}
+INFO 2024-09-10 18:12:16,026 instructlab.model.backends.llama_cpp:193: Starting server process, press CTRL+C to shutdown server...
+INFO 2024-09-10 18:12:16,026 instructlab.model.backends.llama_cpp:194: After application startup complete see http://127.0.0.1:8000/docs for API.
 ----
 
 *WOOHOO!* You just served the model for the first time and are ready to test out your work so far by interacting with the LLM. We are going to accomplish this by chatting with the model.
@@ -245,64 +273,62 @@ INFO 2024-04-23 17:17:02,861 server.py:156 After application startup complete se
 [#chat]
 === Chat with the model
 
-Because you’re serving the model in one terminal window, you will have to create a new window and re-activate your Python virtual environment to run the ilab chat command. 
-Note: You can open a new tab in your terminal by hitting the command-t keyboard combination. If you need assistance, please ask a Red Hatter in the InstructLab Lounge.
+Because you’re serving the model in one terminal window, you will have to use a separate terminal window and re-activate your Python virtual environment to run the ilab chat command. 
 
-In the other terminal window, Issue the following commands:
+. In the *bottom* terminal window, issue the following commands:
 
 [source,sh,role=execute,subs=attributes+]
 ----
 cd ~/instructlab
 source venv/bin/activate
 ----
-.Your Prompt should now look like this
+.Your prompt should now look like this
 [source,sh]
 ----
 (venv) [instruct@instructlab instructlab]$ 
 ----
 
-Now that the environment is sourced, you can begin a chat session with the ilab chat command:
+[start=2]
+. Now that the environment is sourced, you can begin a chat session with the ilab chat command:
 
 
 [source,sh,role=execute,subs=attributes+]
 ----
-ilab model chat -m models/granite-7b-lab-Q4_K_M.gguf
+ilab model chat -m /home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
 ----
 
 
-You should see a chat prompt
+You should see a chat prompt like the example below.
 
 [source,sh]
 ----
 ╭───────────────────────────────────────────────────────────────────────────╮
-│ Welcome to Chat CLI w/ MODELS/GRANITE-7B-LAB-Q4_K_M.GGUF (type /h for help)                                                                                                                                        
+│ Welcome to InstructLab Chat w/ GRANITE-7B-LAB-Q4_K_M.GGUF (type /h for help)                                                                                                                                         
 ╰───────────────────────────────────────────────────────────────────────────╯
 >>> 
 ----
 
-
-At this point, you can interact with the model by asking it a question. Example:
-What is openshift in 20 words or less?
+[start=3]
+. At this point, you can interact with the model by asking it a question. Example:
+What is OpenShift in 20 words or less?
 
 [source,sh,role=execute,subs=attributes+]
 ----
-What is openshift in 20 words or less?                                                                                                                                                                                         
+What is OpenShift in 20 words or less?  
 ----
 
-
-
-Wait, wut? That was AWESOME!!!!! You now have your own local LLM running on this laptop. That was pretty easy, huh?
+Wait, wut? That was AWESOME!!!!! You now have your own local LLM running on this machine. That was pretty easy, huh?
 
 
 [#training]
 === Training and interacting with the model
 Now that you have a working environment, let’s examine the model's abilities by asking it a question related to the Instructlab project. Let's see if it can generate an answer describing the Instructlab project?
 
-Ask the model the following question using the ilab chat terminal that you have open:
+Ask the model the following question using the ilab chat terminal that you still have open:
 
 [source,sh,role=execute,subs=attributes+]
 ----
->> What is the Instructlab project?
+What is the Instructlab project?
 ----
 .The answer will almost certainly be incorrect, as shown in the following output:
 [source,sh]
@@ -313,15 +339,17 @@ on creating innovative training programs, workshops, and online courses that cov
 methods.
 ----
 
-Wow, that was both pretty awesome and sad at the same time! Kudos for it generating a response that appears to be very accurate and it was very confident in doing so. However, it is incorrect. The description of the Instructlab project was completely wrong and although it looks detailed, some of the information it generated is not about this particular project These errors are often referred to as a “hallucination” in the LLM space. Model alignment (like you’re about to do) is one of the ways to improve a model’s answers and avoid hallucinations. In this workshop we are going to focus on adding a new knowledge to the model so that it knows more about the Instructlab project.. 
+Wow, that was both pretty awesome and sad at the same time! Kudos for it generating a response that appears to be very accurate and it was very confident in doing so. However, it is incorrect. The description of the Instructlab project was completely wrong and although it looks detailed, some of the information it generated is not about this particular project. These errors are often referred to as a “hallucination” in the LLM space. 
 
-Let’s get to work and fix this.
+Model alignment (like you’re about to do) is one of the ways to improve a model’s answers and avoid hallucinations. In this workshop, we are going to focus on adding a new knowledge to the model so that it knows more about the Instructlab project.. 
+
+Let’s get to work.
 
 When you are done exploring the model, exit the chat by issuing the exit command:
 
 [source,sh,role=execute,subs=attributes+]
 ----
->>> exit                                                                                    
+exit 
 ----
 
 This is where the real fun begins! We are now going to improve the model by leveraging the Taxonomy structure that is part of the InstructLab project.
@@ -333,10 +361,11 @@ InstructLab uses a novel synthetic data-based alignment tuning method for Large 
 
 The LAB method is driven by taxonomies, which are largely created manually and with care.
 
-InstructLab crowdsources the process of tuning and improving models by collecting two types of data: knowledge and skills in a new open source community. These submissions are collected in a taxonomy of YAML files to be used in the synthetic data generation process. To help you understand the directory structure of a taxonomy, please refer to the following image.
+InstructLab crowdsources the process of tuning and improving models by collecting two types of data: knowledge and skills, in the new InstructLab open source community. These submissions are collected in a taxonomy of YAML files to be used in the synthetic data generation process. To help you understand the directory structure of a taxonomy, please refer to the following image.
   
+image::taxonomy.png[]
 
-We are now going to leverage the taxonomy model to teach the model the knowledge on the Instructlab project
+We are now going to leverage the taxonomy model to teach the model about the InstructLab project.
 
 *Step 1*: Verify you have the taxonomy directory in the working directory you are in.
 
