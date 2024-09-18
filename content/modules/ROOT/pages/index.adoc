@@ -194,13 +194,18 @@ Path to your model [models/merlinite-7b-lab-Q4_K_M.gguf]:
 * The config.yaml file contains defaults we will use during this workshop. After this workshop, when you begin playing around with InstructLab, it is important to understand the contents of the configuration file so that you can tune the parameters to your liking
 
 [#download]
-=== Download the model
+=== Download the models
 
 *Step 1*: Run the `ilab download` command.
 
 [source,sh,role=execute,subs=attributes+]
 ----
 ilab model download --repository instructlab/granite-7b-lab-GGUF --filename=granite-7b-lab-Q4_K_M.gguf
+----
+
+[source,sh,role=execute,subs=attributes+]
+----
+ilab model download --repository instructlab/merlinite-7b-lab-GGUF --filename=merlinite-7b-lab-Q4_K_M.gguf
 ----
 
 The ilab download command downloads a model from the HuggingFace instructlab organization that we will use for this workshop. 
@@ -218,7 +223,7 @@ INFO 2024-05-06 16:46:24,394 file_download.py:1877 Downloading 'granite-7b-lab-Q
 ----
 
 
-Now that the model has been downloaded, we can serve and chat with the model. Serving the model simply means we are going to run a server that will allow other programs to interact with the data similar to making an API call. 
+Now that the models have been downloaded, we can serve and chat with the model. Serving the model simply means we are going to run a server that will allow other programs to interact with the data similar to making an API call. 
 
 [#serve]
 === Serving the model
