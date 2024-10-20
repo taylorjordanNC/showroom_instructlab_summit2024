@@ -58,7 +58,7 @@ We created a CLI tool called ilab that implements a local LLM developer experien
 We anticipate support for more operating systems in the future. The system requirements to use the command line tool are as follows:
 
 . C++ compiler
-. Python 3.10+
+. Python 3.10, 3.11
 . Approximately 60GB disk space (entire process)
 .. Disk space requirements are dependent on several factors. Keep in mind that we will be generating data to feed to the model while also having the model locally on our system. For example, the model we are working with during this workshop is roughly 5gb in size.
 
@@ -82,7 +82,7 @@ source venv/bin/activate
 
 [source,console]
 ----
-(venv) [instruct@instructlab instructlab]$ 
+(venv) [instruct@bastion instructlab]$ 
 ----
 +
 
@@ -91,7 +91,7 @@ source venv/bin/activate
 
 [source,console,role=execute,subs=attributes+]
 ----
-pip3 install git+https://github.com/instructlab/instructlab.git@v0.18.4
+pip3 install git+https://github.com/instructlab/instructlab.git@v0.19.3
 
 ----
 +
@@ -104,6 +104,14 @@ NOTE: `pip install` may take some time, depending on the internet connection ava
 [source,console,role=execute,subs=attributes+]
 ----
 ilab
+----
++
+
+You can verify the version of your installation as well by running:
+
+[source,console,role=execute,subs=attributes+]
+----
+ilab --version
 ----
 +
 
@@ -125,30 +133,20 @@ Usage: ilab [OPTIONS] COMMAND [ARGS]...
 Options:
   --config PATH  Path to a configuration file.  [default: /home/instruct/.config/instructlab/config.yaml]
   -v, --verbose  Enable debug logging (repeat for even more verbosity)
-  --config PATH  Path to a configuration file.  [default: /home/instruct/.config/instructlab/config.yaml]
-  -v, --verbose  Enable debug logging (repeat for even more verbosity)
   --version      Show the version and exit.
   --help         Show this message and exit.
 
 Commands:
-  config    Command Group for Interacting...
-  data      Command Group for Interacting...
-  model     Command Group for Interacting...
-  system    Command group for all...
-  taxonomy  Command Group for Interacting...
+  config    Command Group for Interacting with...
+  data      Command Group for Interacting with...
+  model     Command Group for Interacting with...
+  system    Command group for all system-related...
+  taxonomy  Command Group for Interacting with...
 
 Aliases:
   chat      model chat
-  convert   model convert
-  diff      taxonomy diff
-  download  model download
-  evaluate  model evaluate
   generate  data generate
-  init      config init
-  list      model list
   serve     model serve
-  sysinfo   system info
-  test      model test
   train     model train
 ----
 
@@ -177,39 +175,22 @@ Please provide the following values to initiate the environment [press Enter for
 Path to taxonomy repo [/home/instruct/.local/share/instructlab/taxonomy]:
 ----
 
-NOTE: While traditionally you'll be prompted to configure options and download the taxonomy, here you can just hit kbd:[ENTER] for the default settings.
-
-Press `Y` to clone the taxonomy repository, and continue to hit kbd:[ENTER] for the remaining default settings:
-
-[source,console]
-----
-`/home/instruct/.local/share/instructlab/taxonomy` seems to not exist or is empty. Should I clone https://github.com/instructlab/taxonomy.git for you? [Y/n]: Y
-Cloning https://github.com/instructlab/taxonomy.git...
-Path to your model [/home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf]:
-----
-
-The last step of the ilab configuration is to select a train profile. Train profiles are GPU specific profiles that enable accelerated training behavior. There are various flags you can utilize with individual ilab commands that will allow you to utilize your GPU if applicable. **For this lab**, we are using a single NVIDIA L4 GPU. We will not be performing any training due to time and resource constraints, therefore our selection is inconsiquential.
-
-Select the **No Profile (CPU-only)** option at the following prompt:
-
-----
-Generating `/home/instruct/.config/instructlab/config.yaml` and `/home/instruct/.local/share/instructlab/internal/train_configuration/profiles`...
-Please choose a train profile to use:
-[0] No profile (CPU-only)
-[1] A100_H100_x2.yaml
-[2] A100_H100_x4.yaml
-[3] A100_H100_x8.yaml
-[4] L40_x4.yaml
-[5] L40_x8.yaml
-[6] L4_x8.yaml
-Enter the number of your choice [hit enter for the default CPU-only profile] [0]: 0
-----
-
-NOTE: When prompted to enter a training profile, enter 0 as shown in the above output.
+NOTE: You may hit kbd:[ENTER] for all default settings.
 
 [source,console,subs=quotes]
 ----
-Using default CPU-only train profile.
+Path to your model [/home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf]: 
+Generating `/home/instruct/.config/instructlab/config.yaml`...
+Detecting Hardware...
+We chose Nvidia 1x L4 as your designated training profile. This is for systems with 24 GB of vRAM.
+This profile is the best approximation for your system based off of the amount of vRAM. We modified it to match the number of GPUs you have.
+Is this profile correct? [Y/n]: Y
+----
+
+Type `Y` as shown above or press kbd:[ENTER] to accept the training profile configuration. **For this lab**, we are using a single NVIDIA L4 GPU as described in the above output.
+
+[source,console,subs=quotes]
+----
 Initialization completed successfully, you're ready to start using `ilab`. Enjoy!
 ----
 
@@ -219,7 +200,7 @@ Initialization completed successfully, you're ready to start using `ilab`. Enjoy
 [#download]
 === Download the model
 
-With the InstructLab environment configured, you will now download two different quantized (compressed and optimized) models to your local directory. Granite will be used as a model server for API requests, and Merlinite will help train a new model.
+With the InstructLab environment configured, you will now download two different quantized (compressed and optimized) models to your local directory. Granite will be used as a model server for API requests, and Merlinite will help create synthetic data to train a new model.
 
 *Step 1*: Run the `ilab model download` command in the same **upper** terminal window.
 
@@ -239,7 +220,7 @@ ilab model download --repository instructlab/merlinite-7b-lab-GGUF --filename=me
 
 The `ilab model download`` command downloads a model from the HuggingFace InstructLab organization that we will use for this workshop. 
 
-The output after each download command should resemblethe following:
+The output after each download command should resemble the following:
 
 [source,console,subs=quotes]
 ----
@@ -251,8 +232,7 @@ Download complete. Moving file to /home/instruct/.cache/instructlab/models/grani
 INFO 2024-09-10 16:51:52,562 huggingface_hub.file_download:1924: Download complete. Moving file to /home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
 ----
 
-
-Now that the model has been downloaded, we can serve and chat with the model. Serving the model simply means we are going to run a server that will allow other programs to interact with the data similar to making an API call. 
+Now the models are downloaded, we can serve and chat with the Granite model. Serving the model simply means we are going to run a server that will allow other programs to interact with the data similar to making an API call. 
 
 [#serve]
 === Serving the model
@@ -306,6 +286,7 @@ Because you’re serving the model in one terminal window, you will have to use 
 cd ~/instructlab
 source venv/bin/activate
 ----
+
 .Your prompt should now look like this
 [source,console]
 ----
@@ -372,6 +353,7 @@ Model alignment (like you’re about to do) is one of the ways to improve a mode
 Let’s get to work!
 
 When you are done exploring the model, **exit the chat** by issuing the exit command within in the chat session:
+
 [source,console,role=execute,subs=attributes+]
 ----
 exit 
@@ -401,19 +383,20 @@ We are now going to leverage the taxonomy structure to teach the model about the
 cd /home/instruct/.local/share/instructlab
 tree taxonomy | head -n 10
 ----
+
 .you should see the taxonomy directory listed as shown below:
 [source,texinfo]
 ----
 taxonomy
 ├── CODE_OF_CONDUCT.md
 ├── compositional_skills
-│   ├── arts
-│   ├── engineering
-│   ├── general
-│   │   └── synonyms
-│   │       ├── attribution.txt
-│   │       └── qna.yaml
-│   ├── geography
+│   ├── arts
+│   ├── engineering
+│   ├── geography
+│   ├── grounded
+│   │   ├── arts
+│   │   ├── engineering
+│   │   ├── geography
 ----
 
 Now, we need to create a directory where we can place our files.
@@ -427,15 +410,15 @@ mkdir -p /home/instruct/.local/share/instructlab/taxonomy/knowledge/instructlab/
 
 *Step 3*: Add a new knowledge.
 
-The way the taxonomy approach works is that we provide a file, named `qna.yaml`, that contains a sample data set of questions and answers. This data set will be used in the process of creating many more synthetic data examples.  The important thing to understand about the `qna.yaml` file is that it must follow a specific schema for InstructLab to use it to synthetically generate more examples. 
+The way the taxonomy approach works is that we provide a file, named `qna.yaml`, that contains a sample data set of questions and answers. This data set will be used in the process of creating many more synthetic data examples, enough to fully influence the model's output. The important thing to understand about the `qna.yaml` file is that it must follow a specific schema for InstructLab to use it to synthetically generate more examples. 
 
-The `qna.yaml` file is placed in a folder within the 'knowledge' subdirectory of the taxonomy directory. It is placed in a folder with an appropriate name that is aligned with the data topic, as you will see in the below command.
+The `qna.yaml` file is placed in a folder within the `knowledge` subdirectory of the taxonomy directory. It is placed in a folder with an appropriate name that is aligned with the data topic, as you will see in the below command.
 
 Instead of having to type a bunch of information in by hand, simply run the following command to copy the `qna.yaml` file to your taxonomy directory:
 
 [source,console,role=execute,subs=attributes+]
 ----
-cp -av ~/files/qna.yaml /home/instruct/.local/share/instructlab/taxonomy/knowledge/instructlab/overview
+cp -av ~/files/instructlab_knowledge/qna.yaml /home/instruct/.local/share/instructlab/taxonomy/knowledge/instructlab/overview
 ----
 
 You can then verify the file was correctly copied by issuing the following command which will display the first 10 lines of the file:
@@ -683,7 +666,7 @@ Now it's time to verify that this new data is curated properly.
 
 InstructLab allows you to validate your taxonomy files before generating additional data. You can accomplish this by using the `ilab taxonomy diff` command as shown below:
 
-NOTE: Make sure you are still in the virtual environment indicated by the (venv) on the command line. If not, source the venv/bin/activate file again.
+NOTE: Make sure you are still in the virtual environment indicated by the (venv) on the command line. If not, source the `venv/bin/activate` file again.
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -693,35 +676,21 @@ ilab taxonomy diff
 [source,console]
 ----
 knowledge/instructlab/overview/qna.yaml
-Taxonomy in /home/instruct/.local/share/instructlab/taxonomy/ is valid :)
+Taxonomy in /home/instruct/.local/share/instructlab/taxonomy is valid :)
 ----
 
 
 *Step 5*: Generate synthetic data
+
 Okay, so far so good. Now, let’s move on to the AWESOME part. We are going to use our taxonomy, which contains our `qna.yaml` file, to have the LLM automatically generate more examples. The generate step can often take a while and is dependent on your hardware and the amount of synthetic data that you want to generate. 
 
 InstructLab will generate X number of additional questions and answers based on the samples provided. To give you an idea, it takes 7 minutes when running the default full synthetic data generation pipeline at a scale factor of 30. This can take around 15 minutes using Apple Silicon and depends on many factors. You could customize the scale factor or run a simple pipeline to take less time or if you have lesser hardware, but it is not recommended as it will not generate the optimal output.
 
 However, for the purpose of this workshop we will only generate a small amount of additional samples to give you a sense of how it works.
 
-In the **upper** terminal window, ensure that the Granite model is no longer deployed by hitting kbd:[CTRL+C]:
+NOTE: In the **upper** terminal window, ensure that the Granite model is no longer deployed by hitting kbd:[CTRL+C]
 
-[source,console]
-----
-INFO 2024-05-06 18:41:08,496 server.py:197 After application startup complete see http://127.0.0.1:8000/docs for API.
-^C
-Aborted!
-----
-
-We will then serve the merlinite model, which will serve as the **teacher** model for the purposes of our synthetic data generation:
-
-[source,console,role=execute,subs=attributes+]
-----
-cd ~/instructlab
-ilab model serve --model-path /home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf
-----
-
-We will now run the command (in the second, **bottom** Terminal) to generate the synthetic data:
+We will now run the command (in the second, **bottom** Terminal) to generate the synthetic data. The merlinite model will serve as the **teacher** model:
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -730,7 +699,9 @@ ilab data generate --model /home/instruct/.cache/instructlab/models/merlinite-7b
 
 After running this command, the magic begins!
 
-InstructLab is now synthetically generating data based on the seed data you provided in the `qna.yaml` file. This will take a few minutes. 
+InstructLab is now synthetically generating data based on the seed data you provided in the `qna.yaml` file.
+
+You will see output on your screen indicating the data is being generated as shown below:
 
 [source,console]
 ----
@@ -739,11 +710,13 @@ INFO 2024-09-10 20:00:59,404 numexpr.utils:161: NumExpr defaulting to 16 threads
 INFO 2024-09-10 20:00:59,675 datasets:59: PyTorch version 2.3.1 available.
 INFO 2024-09-10 20:01:00,546 instructlab.model.backends.llama_cpp:104: Trying to connect to model server at http://127.0.0.1:8000/v1
 WARNING 2024-09-10 20:01:00,555 instructlab.data.generate:291: Disabling SDG batching - unsupported with llama.cpp serving
-Generating synthetic data using 'simple' pipeline, '/home/instruct/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf' model, '/home/instruct/.local/share/instructlab/taxonomy' taxonomy, against http://127.0.0.1:8000/v1 server
+Generating synthetic data using 'simple' pipeline, '/home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf' model, '/home/instruct/.local/share/instructlab/taxonomy' taxonomy, against http://127.0.0.1:8000/v1 server
 INFO 2024-09-10 20:01:00,870 instructlab.sdg:375: Synthesizing new instructions. If you aren't satisfied with the generated instructions, interrupt training (Ctrl-C) and try adjusting your YAML files. Adding more examples may help.
 ----
 
-Holy Smokes! That was awesome, right?
+This will take several minutes to complete.
+
+Once the process completes and we have generated additional data, we can use the `ilab model train` command to incorporate this dataset with the model.
 
 If you are curious to view the data generated, the SDG process creates a jsonl file located in the `/home/instruct/.local/share/instructlab/datasets` directory named knowledge_train_msgs[TIMESTAMP].jsonl
 
@@ -752,26 +725,26 @@ Feel free to explore:
 [source,console]
 ----
 cat /home/instruct/.local/share/instructlab/datasets/knowledge_train_msgs[YOUR_TIMESTAMP].jsonl
+----
 
 Now that we have generated additional data, we would now use the ilab train command to incorporate this data set with the model.
 
 NOTE: Using a scale factor of 5 is generally not enough synthetic data to effectively impact the knowledge or skill of a model. However, due to time constraints of this workshop, the goal is to simply show you how this works using real commands. You would typically want to use a scale factor of 30 which is the default value to train the model effectively.
 
-NOTE: Training using the newly generated data is a time and resource intensive task. Depending on many factors, it can take from 20 minutes up to an hour and is highly dependent on the hardware used. We will not train the model during this lab as we will use an already tuned model.
+Once the new data has been generated, the next step is to train the model with the updated knowledge. This is performed with the `ilab model train` command.
+
+NOTE: Training using the newly generated data is a time and resource intensive task. Depending on the number of epochs desired, internet connection for safetensor downloading, and other factors, it can take many hours and is highly dependent on the hardware used. 
 
 [#serve_new_model]
 == Serving the new model
 
-At this point, we are ready to serve our model and test it out. Keep in mind that we only generated 5 additional data points, so the results will vary, and we can’t guarantee the skill we are looking to add was generated with such a small sample size. For that reason, we are going to do a bit of a cooking-show style serving where we are going to serve a model using the exact steps we did in this workshop but with an instruction size of 100 instead of 5. This is simply due to the time constraints; otherwise, you would be sitting here for a few hours, and that isn’t going to make you happy. ;) 
+Due to the time constraints of this lab, we will not actually be training the model! This would require a full-scale synthetic data generation process and a training run that could take many hours. You probably have smoewhere else you need to be, so we are going to show you the end results without making you wait.
 
-NOTE: Make sure to stop the previous `ilab model serve` command that may still be running in the other terminal tab by typing kbd:[CTRL+C]
-
-Type the below command in either terminal window:
+We have provided a model that has already been through this process in your demo system. First, if you have any processes running in either terminal window, type kbd:[CTRL+C] to exit. In order to serve the newly trained model you can now run the following in the *upper* command window:
 
 [source,console,role=execute,subs=attributes+]
 ----
-cd ~/instructlab
-ilab model serve --model-path files/ggml-ilab-pretrained-Q4_K_M.gguf
+ilab model serve --model-path /home/instruct/files/ggml-ilab-pretrained-Q4_K_M.gguf
 ----
 
 Start up another chat session with this newly served model in the **other** terminal where the model is not being served. You will add the kbd:[--greedy-mode] flag to minimize any potential response randomness or variation in the generated response:
