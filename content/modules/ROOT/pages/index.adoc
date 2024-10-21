@@ -65,7 +65,7 @@ We anticipate support for more operating systems in the future. The system requi
 .. Disk space requirements are dependent on several factors. Keep in mind that we will be generating data to feed to the model while also having the model locally on our system. For example, the model we are working with during this workshop is roughly 5gb in size.
 
 // This reset section needs to go away after techxchange
-== Reset your machine
+=== Reset your machine
 
 Before proceeding, ensure your machine is ready for fun!
 
