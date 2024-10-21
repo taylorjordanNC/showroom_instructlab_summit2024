@@ -87,6 +87,7 @@ source venv/bin/activate
 (venv) [instruct@instructlab instructlab]$ 
 ----
 
+[start=2]
 . Install the command line tool using the pip command
 
 
@@ -96,9 +97,9 @@ pip3 install git+https://github.com/instructlab/instructlab.git@v0.19.3
 ----
 
 
-NOTE: `pip install` should process quickly because InstructLab is preinstalled in your environment.
+NOTE: `pip install` should process quickly because InstructLab is pre-installed in your environment.
 
-
+[start=3]
 . From your venv environment, verify ilab is installed correctly by running the ilab command.
 
 
@@ -185,10 +186,10 @@ Generating `/home/instruct/.config/instructlab/config.yaml`...
 Detecting Hardware...
 We chose Nvidia 1x L4 as your designated training profile. This is for systems with 24 GB of vRAM.
 This profile is the best approximation for your system based off of the amount of vRAM. We modified it to match the number of GPUs you have.
-Is this profile correct? [Y/n]: **Y**
+Is this profile correct? [Y/n]: Y
 ----
 
-Type `Y` as shown above or press kbd:[ENTER] to accept the training profile configuration. **For this lab**, we are using a single NVIDIA L4 GPU as described in the above output.
+Type `Y` as shown above or press kbd:[ENTER] to accept the training profile configuration. **For this lab**, we are using a single NVIDIA A10 GPU and this training profile is appropriate.
 
 [source,console]
 ----
@@ -699,10 +700,12 @@ We will now run the command (in the second, **bottom** Terminal) to generate the
 
 [source,console,role=execute,subs=attributes+]
 ----
-ilab data generate --model /home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf --sdg-scale-factor 5 --pipeline simple --gpus 1
+ilab data generate --model /home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf --sdg-scale-factor 5 --gpus 1
 ----
 
 After running this command, the magic begins!
+
+NOTE: You will see an `AssertionError` thrown before the SDG process begins. This does not impact the process so please continue without worry.
 
 InstructLab is now synthetically generating data based on the seed data you provided in the `qna.yaml` file.
 
@@ -722,7 +725,7 @@ This will take several minutes to complete.
 
 Once the process completes and we have generated additional data, we can use the `ilab model train` command to incorporate this dataset with the model.
 
-If you are curious to view the data generated, the SDG process creates a jsonl file located in the `/home/instruct/.local/share/instructlab/datasets` directory named knowledge_train_msgs[TIMESTAMP].jsonl
+If you are curious to view the data generated, the SDG process creates a jsonl file located in the `/home/instruct/.local/share/instructlab/datasets` directory named **knowledge_train_msgs[TIMESTAMP].jsonl**
 
 Feel free to explore. You must input your exact file name in the following command:
 
