@@ -1,5 +1,6 @@
 = InstructLab on RHEL
 :experimental: true
+:imagesdir: ../assets/images
 
 [#intro]
 == Introducing InstructLab
@@ -71,42 +72,41 @@ You will work with the Linux Terminal throughout this workshop. The terminal is 
 The first thing we need to do is to source a Python virtual environment that will allow us to interact with the InstructLab command line tools. While you have two terminal windows available on your right, let's start with the *upper* window.
 
 . Navigate to the preset InstructLab folder and activate the Python virtual environment by running the following commands:
-+
+
 
 [source,console,role=execute,subs=attributes+]
 ----
 cd ~/instructlab
 source venv/bin/activate
 ----
-+
+
 .Your prompt should now look like this
 
 [source,console]
 ----
-(venv) [instruct@bastion instructlab]$ 
+(venv) [instruct@instructlab instructlab]$ 
 ----
-+
 
 . Install the command line tool using the pip command
-+
+
 
 [source,console,role=execute,subs=attributes+]
 ----
 pip3 install git+https://github.com/instructlab/instructlab.git@v0.19.3
-
 ----
-+
 
-NOTE: `pip install` may take some time, depending on the internet connection available or if the files have been cached locally.
+
+NOTE: `pip install` should process quickly because InstructLab is preinstalled in your environment.
+
 
 . From your venv environment, verify ilab is installed correctly by running the ilab command.
-+
+
 
 [source,console,role=execute,subs=attributes+]
 ----
 ilab
 ----
-+
+
 
 You can verify the version of your installation as well by running:
 
@@ -114,10 +114,10 @@ You can verify the version of your installation as well by running:
 ----
 ilab --version
 ----
-+
+
 
 Assuming that everything has been installed correctly, you should see the following output:
-+
+
 
 [source,console]
 ----
@@ -169,7 +169,7 @@ ilab config init
 
 You should see the following output (press kbd:[ENTER] for defaults):
 
-[source,console,subs=quotes]
+[source,console]
 ----
 Welcome to InstructLab CLI. This guide will help you to setup your environment.
 Please provide the following values to initiate the environment [press Enter for defaults]:
@@ -178,19 +178,19 @@ Path to taxonomy repo [/home/instruct/.local/share/instructlab/taxonomy]:
 
 NOTE: You may hit kbd:[ENTER] for all default settings.
 
-[source,console,subs=quotes]
+[source,console]
 ----
 Path to your model [/home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf]: 
 Generating `/home/instruct/.config/instructlab/config.yaml`...
 Detecting Hardware...
 We chose Nvidia 1x L4 as your designated training profile. This is for systems with 24 GB of vRAM.
 This profile is the best approximation for your system based off of the amount of vRAM. We modified it to match the number of GPUs you have.
-Is this profile correct? [Y/n]: Y
+Is this profile correct? [Y/n]: **Y**
 ----
 
 Type `Y` as shown above or press kbd:[ENTER] to accept the training profile configuration. **For this lab**, we are using a single NVIDIA L4 GPU as described in the above output.
 
-[source,console,subs=quotes]
+[source,console]
 ----
 Initialization completed successfully, you're ready to start using `ilab`. Enjoy!
 ----
@@ -223,7 +223,7 @@ The `ilab model download`` command downloads a model from the HuggingFace Instru
 
 The output after each download command should resemble the following:
 
-[source,console,subs=quotes]
+[source,console]
 ----
 Downloading model from Hugging Face: instructlab/granite-7b-lab-GGUF@main to /home/instruct/.cache/instructlab/models...
 Downloading 'granite-7b-lab-Q4_K_M.gguf' to '/home/instruct/.cache/instructlab/models/.cache/huggingface/download/granite-7b-lab-Q4_K_M.gguf.6adeaad8c048b35ea54562c55e454cc32c63118a32c7b8152cf706b290611487.incomplete'
@@ -291,7 +291,7 @@ source venv/bin/activate
 .Your prompt should now look like this
 [source,console]
 ----
-(venv) [instruct@bastion instructlab]$ 
+(venv) [instruct@instructlab instructlab]$ 
 ----
 
 [start=2]
@@ -329,7 +329,7 @@ Wait, wut? That was AWESOME!!!!! You now have your own local LLM running on this
 == Enhancing a LLM with InstructLab
 Now that you have a working environment, let’s examine the model's abilities by asking it a question related to the Instructlab project. 
 
-Ask the model the following question using the `ilab chat` terminal that you still have open:
+Ask the model the following question using the current ilab chat session in the **bottom** terminal:
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -347,7 +347,7 @@ methods.
 
 NOTE: LLMs by nature are non-deterministic. This means that even with the same prompt input, the model will produce varying responses. So, your results may vary.
 
-Wow, that was both pretty awesome and sad at the same time! Kudos for it generating a response that appears to be very accurate and it was very confident in doing so. However, it is incorrect. The description of the Instructlab project was completely wrong and although it looks detailed, some of the information it generated is not about this particular project. These errors are often referred to as a “hallucination” in the LLM space.
+Wow, that was both pretty awesome and sad at the same time! Kudos for it generating a response that appears to be very accurate and it was very confident in doing so. However, it is incorrect. The description of the Instructlab project was completely wrong and although it looks detailed, some of the information it generated is not about this particular project. These errors are often referred to as “hallucinations” in the LLM space.
 
 Model alignment (like you’re about to do) is one of the ways to improve a model’s answers and avoid hallucinations. In this workshop, we are going to focus on adding a new knowledge to the model so that it knows more about the Instructlab project.
 
@@ -373,11 +373,11 @@ The LAB method is driven by taxonomies, which are largely created manually and w
 
 InstructLab crowdsources the process of tuning and improving models by collecting two types of data: **knowledge** and **skills**, in the new InstructLab open source community. These submissions are collected in a taxonomy of YAML files to be used in the synthetic data generation process. To help you understand the directory structure of a taxonomy, please refer to the following image.
   
-image::../assets/images/taxonomy.png[]
+image::taxonomy.png[]
 
 We are now going to leverage the taxonomy structure to teach the model about the InstructLab project.
 
-==== Navigate to the taxonomy directory
+=== Navigate to the taxonomy directory
 
 Use the **bottom** terminal and ensure you have exited the chat session by typing `exit`.
 
@@ -387,7 +387,7 @@ cd /home/instruct/.local/share/instructlab
 tree taxonomy | head -n 10
 ----
 
-.you should see the taxonomy directory listed as shown below:
+.You should see the taxonomy directory listed as shown below:
 [source,texinfo]
 ----
 taxonomy
@@ -404,7 +404,7 @@ taxonomy
 
 Now, we need to create a directory where we can place our files.
 
-==== Create a directory to add new knowledge
+=== Create a directory to add new knowledge
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -412,7 +412,7 @@ mkdir -p /home/instruct/.local/share/instructlab/taxonomy/knowledge/instructlab/
 ----
 
 [#add_qna]
-==== Add a new knowledge
+=== Add a new knowledge
 
 The way the taxonomy approach works is that we provide a file, named `qna.yaml`, that contains a sample data set of questions and answers. This data set will be used in the process of creating many more synthetic data examples, enough to fully influence the model's output. The important thing to understand about the `qna.yaml` file is that it must follow a specific schema for InstructLab to use it to synthetically generate more examples. 
 
@@ -667,7 +667,7 @@ document:
 Now it's time to verify that this new data is curated properly.
 
 [#verify]
-==== Verify your new knowledge addition
+=== Verify your new knowledge addition
 
 InstructLab allows you to validate your taxonomy files before generating additional data. You can accomplish this by using the `ilab taxonomy diff` command as shown below:
 
@@ -706,17 +706,16 @@ After running this command, the magic begins!
 
 InstructLab is now synthetically generating data based on the seed data you provided in the `qna.yaml` file.
 
-You will see output on your screen indicating the data is being generated as shown below:
+You will see output on your screen indicating the data is being generated, like below:
 
 [source,console]
 ----
-INFO 2024-09-10 20:00:59,404 numexpr.utils:148: Note: NumExpr detected 48 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
-INFO 2024-09-10 20:00:59,404 numexpr.utils:161: NumExpr defaulting to 16 threads.
-INFO 2024-09-10 20:00:59,675 datasets:59: PyTorch version 2.3.1 available.
-INFO 2024-09-10 20:01:00,546 instructlab.model.backends.llama_cpp:104: Trying to connect to model server at http://127.0.0.1:8000/v1
-WARNING 2024-09-10 20:01:00,555 instructlab.data.generate:291: Disabling SDG batching - unsupported with llama.cpp serving
-Generating synthetic data using 'simple' pipeline, '/home/instruct/.cache/instructlab/models/merlinite-7b-lab-Q4_K_M.gguf' model, '/home/instruct/.local/share/instructlab/taxonomy' taxonomy, against http://127.0.0.1:8000/v1 server
-INFO 2024-09-10 20:01:00,870 instructlab.sdg:375: Synthesizing new instructions. If you aren't satisfied with the generated instructions, interrupt training (Ctrl-C) and try adjusting your YAML files. Adding more examples may help.
+INFO 2024-10-21 02:01:23,450 instructlab.sdg.llmblock:51: LLM server supports batched inputs: False
+INFO 2024-10-21 02:01:23,450 instructlab.sdg.pipeline:197: Running block: gen_knowledge
+INFO 2024-10-21 02:01:23,450 instructlab.sdg.pipeline:198: Dataset({
+    features: ['icl_document', 'document', 'document_outline', 'domain', 'icl_query_1', 'icl_query_2', 'icl_query_3', 'icl_response_1', 'icl_response_2', 'icl_response_3'],
+    num_rows: 10
+})
 ----
 
 This will take several minutes to complete.
@@ -725,7 +724,7 @@ Once the process completes and we have generated additional data, we can use the
 
 If you are curious to view the data generated, the SDG process creates a jsonl file located in the `/home/instruct/.local/share/instructlab/datasets` directory named knowledge_train_msgs[TIMESTAMP].jsonl
 
-Feel free to explore:
+Feel free to explore. You must input your exact file name in the following command:
 
 [source,console]
 ----
@@ -756,7 +755,7 @@ Start up another chat session with this newly served model in the **other** term
 
 [source,console,role=execute,subs=attributes+]
 ----
-ilab model chat --greedy-mode -m files/ggml-ilab-pretrained-Q4_K_M.gguf
+ilab model chat --greedy-mode -m ~/files/ggml-ilab-pretrained-Q4_K_M.gguf
 ----
 
 Verify the results by entering in the original prompt again:
@@ -766,7 +765,7 @@ Verify the results by entering in the original prompt again:
 What is the Instructlab project?
 ----
 
-The answer should be better and more accurate! If all went right, and I am sure it did ;) the output should look something like this: (keep in mind that your output may look different due to the nature of large language models)
+The answer should be better and more accurate! If all went right, and I am sure it did ;) the output should look something like this: (keep in mind that your output will look different due to the nature of large language models)
 
 
 [source,console]
