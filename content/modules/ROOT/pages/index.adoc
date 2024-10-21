@@ -64,6 +64,19 @@ We anticipate support for more operating systems in the future. The system requi
 . Approximately 60GB disk space (entire process)
 .. Disk space requirements are dependent on several factors. Keep in mind that we will be generating data to feed to the model while also having the model locally on our system. For example, the model we are working with during this workshop is roughly 5gb in size.
 
+// This reset section needs to go away after techxchange
+== Reset your machine
+
+Before proceeding, ensure your machine is ready for fun!
+
+**Run the following command to reset your system:**
+[source,console,role=execute,subs=attributes+]
+----
+~/files/reset/cleanup_and_reset.sh
+----
+
+---
+
 [#installation]
 === Installing ilab
 
@@ -785,6 +798,17 @@ latest developments, join the community, contribute, or simply explore the platf
 ----
 
 Woohoo young padawan, mission accomplished.
+
+// This reset section needs to go away after techxchange
+== Reset your machine
+
+Before we wrap up, ensure your machine is ready the next person!
+
+**Run the following command to reset your system:**
+[source,console,role=execute,subs=attributes+]
+----
+~/files/reset/cleanup_and_reset.sh
+----
 
 [#conclusion]
 == Conclusion
