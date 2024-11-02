@@ -228,7 +228,7 @@ ilab model download --repository instructlab/granite-7b-lab-GGUF --filename=gran
 
 One more time, let's pull down Merlinite:
 
-[source,console,role=execute,subs=attributes+]
+[source,sh,role=execute,subs=attributes+]
 ----
 ilab model download --repository instructlab/merlinite-7b-lab-GGUF --filename=merlinite-7b-lab-Q4_K_M.gguf
 ----
