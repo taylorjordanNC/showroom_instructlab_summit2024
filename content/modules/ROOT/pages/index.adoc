@@ -210,7 +210,7 @@ Initialization completed successfully, you're ready to start using `ilab`. Enjoy
 ----
 
 ** Several things happen during the initialization phase: A default taxonomy is created on the local file system, and a configuration file (config.yaml) is created in the 'home/instruct/.config/instructlab/' directory.
-* The config.yaml file contains defaults we will use during this workshop. After this workshop, when you begin playing around with InstrctLab, it is important to understand the contents of the configuration file so that you can tune the parameters to your liking.
+* The config.yaml file contains defaults we will use during this workshop. After this workshop, when you begin playing around with InstructLab, it is important to understand the contents of the configuration file so that you can tune the parameters to your liking.
 
 [#download]
 === Download the models
